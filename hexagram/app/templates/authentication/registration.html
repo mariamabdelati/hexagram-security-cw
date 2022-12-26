@@ -18,8 +18,8 @@ PROJECTS@HEXAGRAM Register Page
             {{ form.email.label() }}
             {{ form.email(class="form-control", placeholder="Email Address") }}
             <br>
-            {{ form.admin_code.label() }}
-            {{ form.admin_code(class="form-control", placeholder="Admin Code") }}
+            {{ form.department.label() }}
+            {{ form.department(class="form-control", placeholder="Department") }}
             <br>
             {{ form.password1.label() }}
             {{ form.password1(class="form-control", placeholder="Password") }}
@@ -29,7 +29,7 @@ PROJECTS@HEXAGRAM Register Page
 
             <div class="checkbox mb-3">
                <h6>Already have an account?</h6>
-               <a class="btn btn-sm btn-secondary" href="{{ url_for('login_page') }}">Login</a>
+               <a class="btn btn-sm btn-secondary" href="{{ url_for('auth.login_page') }}">Login</a>
             </div>
 
             {{ form.submit(class="btn btn-lg btn-block btn-primary") }}

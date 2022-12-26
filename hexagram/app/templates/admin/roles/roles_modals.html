@@ -1,0 +1,92 @@
+<style>
+  .modal-content {
+    background-color: #212121;
+  }
+</style>
+
+<!-- Add New Role -->
+<div id="modal_add_role" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add New Role</h4>
+      </div>
+
+      <div class="modal-body">
+        <form action="{{url_for('admin.add_role')}}" method="POST">
+          <div class="form-group">
+            <label>Name:</label>
+            <input
+              type="text"
+              class="form-control"
+              name="name"
+              maxlength="60"
+              placeholder="Role Name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Description:</label>
+            <input
+              type="text"
+              class="form-control"
+              name="description"
+              maxlength="200"
+              placeholder="Description"
+            />
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Create</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Role -->
+<div
+  id="modal_delete_role-{{ role.name }}"
+  class="modal fade"
+  role="dialog"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Role</h4>
+      </div>
+
+      <div class="modal-body">
+        <form action="{{url_for('admin.delete_role')}}" method="POST">
+          <input
+            type="hidden"
+            class="form-control"
+            name="name"
+            value="{{ role.id }}"
+          />
+
+          <div class="form-group">
+            <label>Are you sure you want to delete "{{ role.name }}"?</label>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-danger btn-xs" type="submit">Delete</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

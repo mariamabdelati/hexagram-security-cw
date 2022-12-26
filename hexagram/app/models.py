@@ -7,29 +7,35 @@ Formal Modelling
 Models represent objects in Petri Nets
 """
 @login_manager.user_loader
-def load_user(admin_id):
+def load_user(user_id):
     """
-    Returns the current logged in admin
+    Returns the current logged in user
     """
-    return Admin.query.get(int(admin_id))
+    return User.query.get(int(user_id))
 
 
-class Admin(db.Model, UserMixin):
+class User(db.Model, UserMixin):
     """
-    Create Admin object model
+    Create User object model
     """
     id = db.Column(db.Integer(), primary_key=True)
-    username = db.Column(db.String(length=30), nullable=False, unique=True)
     email = db.Column(db.String(length=50), nullable=False, unique=True)
-    admin_code = db.Column(db.String(length=15), nullable=False)
+    username = db.Column(db.String(length=30), nullable=False, unique=True)
+    first_name = db.Column(db.String(60), index=True)
+    last_name = db.Column(db.String(60), index=True)
     password_hash = db.Column(db.String(length=60), nullable=False)
+    department = db.Column(db.String(length=20), nullable=False)
+    permission = db.relationship('Permissions', backref='user')
+    is_admin = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
         """
         Returns the password
         """
-        return self.password
+        #return self.password
+        # Preventing password from being accessed      
+        raise AttributeError('password is not a readable attribute.')
 
     @password.setter
     def password(self, plain_text_password):
@@ -44,37 +50,27 @@ class Admin(db.Model, UserMixin):
         """
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
-
-class Designer(db.Model):
-    """
-    Create designer object model
-    """
-    id = db.Column(db.Integer(), primary_key=True)
-
-    name = db.Column(db.String(length=30), nullable=False, unique=True)
-    department = db.Column(db.String(length=20), nullable=False)
-    managed_project = db.Column(db.Integer(), nullable=False)
-
+    def __repr__(self):
+        return '<User: {}>'.format(self.username)
 
 class Project(db.Model):
     """
     Create Project object model
     """
     id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(length=30), nullable=False, unique=True)
+    name = db.Column(db.String(length=30), nullable=False, unique=True)
     hours = db.Column(db.String(length=20), nullable=False)
     status = db.Column(db.String(length=20), nullable=False)
     project_details = db.Column(db.String(), nullable=False)
-    #check_system = db.Column(db.String(length=2), nullable=False)
     project_start_date = db.Column(db.String(), nullable=False)
     estimated_time = db.Column(db.Integer(), nullable=False)
-    assigned_designer = db.Column(db.String(), nullable=False)
-    #man_hours = db.Column(db.Integer(), nullable=False)
     last_updated = db.Column(db.String(), nullable=False)
+    permission = db.relationship('Permissions', backref='project')
+
 
     def assign(self, designer):
         """
-        Assigns technician to the ac maintenance
+        Assigns designer to the project
         """
         designer.managed_project = self.id
         self.assigned_designer = designer.name
@@ -82,8 +78,32 @@ class Project(db.Model):
 
     def remove_assign(self, designer):
         """
-        Removes the assigned technician from the ac maintenance
+        Removes the assigned designer from the project
         """
         designer.managed_project = None
         self.assigned_designer = None
         db.session.commit() # Write changes to the database
+
+    def __repr__(self):
+        return '<Project: {}>'.format(self.name)
+
+class Permissions(db.Model):
+    """
+    Create permissions object model
+    """
+    id = db.Column(db.Integer(), primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
+class Role(db.Model):
+    """
+    Create role object model
+    """
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=60), nullable=False, unique=True)
+    description = db.Column(db.String(200))
+    permission = db.relationship('Permissions', backref='role')
+
+    def __repr__(self):
+        return '<Role: {}>'.format(self.name)

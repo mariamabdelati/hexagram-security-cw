@@ -6,14 +6,15 @@ PROJECTS@HEXAGRAM Home
     <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-dark" style="color:white">
         <div class="col-md-5 p-lg-5 mx-auto my-5">
 
-            <h1 class="display-4 font-weight-normal">PROJECTS@HEXAGRAM</h1>
+            <h1 class="font-weight-normal">PROJECTS@HEXAGRAM</h1>
 
             <p class="lead font-weight-normal">Hexagram system for scheduling projects</p>
             {% if current_user.is_authenticated %}
-                <a class="btn btn-primary" href="{{ url_for('projects_page') }}">Projects Page</a>
-                <a class="btn btn-primary" href="{{ url_for('designers_page') }}">Designers Page</a>
+                <a class="btn btn-primary" href="{{ url_for('admin.projects_page') }}">Projects Page</a>
+                <a class="btn btn-primary" href="{{ url_for('admin.designers_page') }}">Designers Page</a>
+                <a class="btn btn-primary" href="{{ url_for('admin.roles_page') }}">Roles Page</a>
             {% else %}
-                <a class="btn btn-primary" href="{{ url_for('login_page') }}">Login</a>
+                <a class="btn btn-primary" href="{{ url_for('auth.login_page') }}">Login</a>
             {% endif %}
         </div>
 

@@ -1,0 +1,43 @@
+<style>
+  .modal-content {
+    background-color: #212121
+  }
+</style>
+
+<!-- Delete User -->
+<div id="modaldelete" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+
+      <div class="modal-content">
+
+         <div class="modal-header">
+            <h4 class="modal-title">Delete</h4>
+         </div>
+
+         <div class="modal-body">
+
+            <form action="{{url_for('admin.delete')}}" method="POST">
+               <div class="form-group">
+                  <label>Are you sure you want to delete your account?</label>
+               </div>
+               <div class="form-group">
+
+                  <button class="btn btn-danger btn-xs" type="submit">Delete</button>
+
+               </div>
+
+            </form>
+
+         </div>
+
+         <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+
+   </div>
+
+</div>

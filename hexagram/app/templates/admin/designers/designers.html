@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}
+PROJECTS@HEXAGRAM Designers
+{% endblock %}
+{% block content %}
+
+<div class="row" style="margin-top:20px; margin-left:20px">
+   <div class="col-8">
+      <h1 style="text-align:center;">Designers</h1>
+   
+      {% if designers %}
+         <p style="text-align:center;">All designers are shown below</p>
+         <br>
+         <hr class="intro-divider">
+         <div class="center">
+            <table class="table table-striped table-dark">
+               <thead>
+                  <tr>
+                     <!-- Designer Columns -->
+                     <th scope="col">First Name</th>
+                     <th scope="col">Last Name</th>
+                     <th scope="col">Department</th>
+                     <th scope="col">Admin</th>
+                     <th scope="col">Options</th>
+                  </tr>
+               </thead>
+
+               <tbody>
+                  <!-- Rows inside the table -->
+                  {% for designer in designers %}
+                  {% include 'admin/designers/designers_modals.html' %}
+                  <tr>
+                     <td>{{ designer.first_name }}</td>
+                     <td>{{ designer.last_name }}</td>
+                     <td>{{ designer.department }}</td>
+                     <td>
+                        {% if designer.is_admin %}
+                          Yes
+                        {% else %}
+                          No
+                        {% endif %}
+                     </td>
+                     <td>
+                     <button href="/designers/delete_designer" class="btn btn-outline btn-danger" data-toggle="modal" data-target="#modal_delete_designer-{{ designer.name }}">Delete Designer</button>
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+         {% else %}
+            <div style="text-align: center">
+               <h3> No designers have been added. </h3>
+               <hr class="intro-divider">
+            </div>
+         {% endif %}
+         <div style="text-align: center">
+            <button href="/designers/add_designer" class="btn btn-outline btn-info" data-toggle="modal" data-target="#modal_add_designer">Add Designer</button>
+          </div>
+   </div>
+</div>
+{% endblock %}
