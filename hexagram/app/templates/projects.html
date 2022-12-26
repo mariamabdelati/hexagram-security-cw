@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}
+PROJECTS@HEXAGRAM Projects
+{% endblock %}
+{% block content %}
+
+<div class="row" style="margin-top:20px; margin-left:20px">
+   <div class="col-8">
+       <h2>Projects</h2>
+       <p>All project information is shown below</p>
+       <br>
+
+      <table class="table table-hover table-dark">
+         <thead>
+            <tr>
+               <!-- Projects Columns -->
+                <th scope="col">Project Title</th>
+                <th scope="col">Estimated Work Hours</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last Updated</th>
+                <th scope="col">Options</th>
+            </tr>
+         </thead>
+
+         <tbody>
+            <!-- Project Rows -->
+            {% for project in projects %}
+            {% include 'includes/projects_modals.html' %}
+            <tr>
+               <td>{{ project.title }}</td>
+               <td>{{ project.hours }}</td>
+                <td>{{ project.status }}</td>
+                <td>{% if project.status == "Open" %}
+                    {{ project.last_updated }}
+                    {% else %}
+                    -
+                {% endif %}
+                </td>
+               <td>
+                   {% if project.status != "Open" %}
+                        <button class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo-{{ project.id }}">More info about Project</button>
+                        <button href="/update_project" class="btn btn-outline btn-success" data-toggle="modal" data-target="#modal_project-{{ project.id }}">Complete Project</button>
+                   {% endif %}
+                   <button href="/update_project" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modal_edit_project-{{ project.id }}">Schedule Project </button>
+                   <button href="/delete_project" class="btn btn-outline btn-danger" data-toggle="modal" data-target="#modal_delete_project-{{ project.id }}">Delete Project</button>
+               </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+
+       <button href="/add_project" class="btn btn-outline btn-info" data-toggle="modal" data-target="#modal_add_project">Add Project</button>
+   </div>
+    </div>
+{% endblock %}

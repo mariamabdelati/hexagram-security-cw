@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+PROJECTS@HEXAGRAM
+{% endblock %}
+{% block content %}
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-dark" style="color:white">
+        <div class="col-md-5 p-lg-5 mx-auto my-5">
+            <h1> 404 Error </h1>
+            <h3 class="display-4 font-weight-normal">UH OH, the page you're trying to access does not exist.</h1>
+
+            <p class="lead font-weight-normal">You may return to the main pages using the navigations below!</p>
+            {% if current_user.is_authenticated %}
+                <a class="btn btn-primary" href="{{ url_for('projects_page') }}">Projects Page</a>
+                <a class="btn btn-primary" href="{{ url_for('designers_page') }}">Designers Page</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ url_for('login_page') }}">Login</a>
+            {% endif %}
+        </div>
+
+        <div class="product-device box-shadow d-none d-md-block"></div>
+        <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
+    </div>
+{% endblock %}
