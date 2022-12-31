@@ -3881,3 +3881,10 @@ hexagram/app/auth/__pycache__/forms.cpython-310.pyc
 hexagram/app/auth/__pycache__/views.cpython-310.pyc
 hexagram/app/home/__pycache__/__init__.cpython-310.pyc
 hexagram/app/home/__pycache__/views.cpython-310.pyc
+.vscode/settings.json
+.gitignore
+hexagram/__pycache__/test_models.cpython-310.pyc
+hexagram/__pycache__/test_routes.cpython-310.pyc
+hexagram/app/user/__pycache__/__init__.cpython-310.pyc
+hexagram/app/user/__pycache__/forms.cpython-310.pyc
+hexagram/app/user/__pycache__/views.cpython-310.pyc

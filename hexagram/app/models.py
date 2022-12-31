@@ -30,12 +30,8 @@ class User(db.Model, UserMixin):
 
     @property
     def password(self):
-        """
-        Returns the password
-        """
-        #return self.password
         # Preventing password from being accessed      
-        raise AttributeError('password is not a readable attribute.')
+        raise AttributeError('Password is not a readable attribute.')
 
     @password.setter
     def password(self, plain_text_password):
@@ -67,25 +63,9 @@ class Project(db.Model):
     last_updated = db.Column(db.String(), nullable=False)
     permission = db.relationship('Permissions', backref='project')
 
-
-    def assign(self, designer):
-        """
-        Assigns designer to the project
-        """
-        designer.managed_project = self.id
-        self.assigned_designer = designer.name
-        db.session.commit() # Write changes to the database
-
-    def remove_assign(self, designer):
-        """
-        Removes the assigned designer from the project
-        """
-        designer.managed_project = None
-        self.assigned_designer = None
-        db.session.commit() # Write changes to the database
-
     def __repr__(self):
         return '<Project: {}>'.format(self.name)
+
 
 class Permissions(db.Model):
     """
@@ -95,6 +75,22 @@ class Permissions(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
+    def assign(self, project, designer, role):
+        self.project_id = project.id
+        self.user_id = designer.id
+        self.role_id = role.id
+        db.session.add(self) # Add new record to the database
+        db.session.commit() # Write changes to the database
+
+    def remove_assign(self, designer):
+        """
+        Removes the assigned designer from the project
+        """
+        self.project_id = None
+        self.user_id = None
+        self.role_id = None
+        db.session.commit() # Write changes to the database
 
 class Role(db.Model):
     """

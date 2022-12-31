@@ -1,9 +1,18 @@
 from flask import abort, render_template, redirect, url_for, flash, request
-from app.models import User, Project, Role
+from app.models import User, Project, Role, Permissions
 from .forms import ProjectAssignForm
 from app import db
 from flask_login import login_user, logout_user, login_required, current_user
+from flask import render_template, redirect, url_for, flash, request, session
+from app.models import User, Project
+from app import db
+from flask_login import login_user, logout_user, login_required, current_user
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError, Regexp
+from app.models import User
 
+from app import limiter
 from . import admin
 
 def check_admin():
@@ -66,37 +75,10 @@ def designers_page():
     Shows all designer available
     """
     check_admin()
-
-    # Shows the designer list and assigned projects
     if request.method == "GET":
         designers = User.query
         projects = Project.query
         return render_template('admin/designers/designers.html', designers=designers, projects=projects)
-
-@admin.route('/designers/add_designer', methods=['GET', 'POST'])
-@login_required # Requires admin login
-def add_designer():
-    """
-    Route to create a new designer with validation
-    """
-    check_admin()
-
-    # Assigns data input on the form to Designer
-    designer_to_create = User(name=request.form.get('name').lower(),                            
-                                  department=request.form.get('department').lower(),
-                                  managed_project=None)
-
-    if User.query.filter_by(name=designer_to_create.name).first(): # Checks if designer already exists
-        flash(f'Designer already exists', category='danger')
-        return redirect(url_for('admin.designers_page'))
-    else:
-        if designer_to_create.name != "" and designer_to_create.department != "":
-            db.session.add(designer_to_create)
-            db.session.commit()
-            flash(f"Designer Has Been Successfully Added!", category='success')
-            return redirect(url_for('admin.designers_page'))
-        flash(f"Designer Entries can not be empty!", category='danger')
-        return redirect(url_for('admin.designers_page'))
 
 @admin.route('/designers/delete_designer', methods=['GET', 'POST'])
 @login_required # Requires admin login
@@ -107,13 +89,21 @@ def delete_designer():
     check_admin()
 
     designer_name = request.form.get('name')
-    current_designer = User.query.filter_by(name=designer_name).first()
+    current_designer = User.query.filter_by(id=designer_name).first()
+    print(current_designer.id)
 
-    # Function to delete current designer from the database
-    db.session.delete(current_designer)
-
-    # Write changes in the database
-    db.session.commit()
+    permissions= Permissions.query.with_entities(Permissions.user_id).filter_by(user_id=current_designer.id).all()
+    permissions = [p.user_id for p in permissions]
+    
+    if len(permissions) == 0:
+        # Function to delete current designer from the database
+        db.session.delete(current_designer)
+        # Write changes in the database
+        db.session.commit()
+        flash(f"User was successfully deleted!", category='success')
+    else:
+        flash(f"User is assigned to project!", category='danger')
+    
     return redirect(url_for('admin.designers_page'))
 
 """
@@ -167,11 +157,21 @@ def delete_role():
     role_name = request.form.get('name')
     current_role = Role.query.filter_by(name=role_name).first()
 
-    # Function to delete current role from the database
-    db.session.delete(current_role)
+    if current_role.id == 1 | current_role.id == 2:
+        flash(f"Main user roles cannot be deleted!", category='danger')
+    else:
 
-    # Write changes in the database
-    db.session.commit()
+        permissions= Permissions.query.with_entities(Permissions.role_id).filter_by(role_id=current_role.id).all()
+        permissions = [p.role_id for p in permissions]
+    
+        if len(permissions) == 0:
+            # Function to delete current role from the database
+            db.session.delete(current_role)
+            #Write changes in the database
+            db.session.commit()
+        else:
+            flash(f"Roles assigned to user!", category='danger')
+   
     return redirect(url_for('admin.roles_page'))
    
 """
@@ -206,7 +206,7 @@ def add_project():
                                   project_details=None,
                                   project_start_date=None,
                                   estimated_time=None,
-                                  assigned_designer=None)
+                                  last_updated= None)
 
     if Project.query.filter_by(name=project_to_create.name).first(): # Checks if project already exists
         flash(f'Project already exists', category='danger')
@@ -230,46 +230,32 @@ def update_project():
 
     # New values
     new_status = request.form.get('status')
-    #new_check = request.form.get('check')
     new_project_details = request.form.get('project_details')
-    #new_man_hours = request.form.get('man_hours')
     new_project_start_date = request.form.get('project_start_date')
     new_estimated_time = request.form.get('estimated_time')
-    assigned_designer = request.form.get('assigned_designer')
     project_name = request.form.get('name')
     last_update = request.form.get('project_start_date')
 
-    designer_assigned = User.query.filter_by(id=assigned_designer).first()
 
     # Assign to the current project
     current_project = Project.query.filter_by(name=project_name).first()
     if new_project_start_date != "" and new_estimated_time != '0':
         if new_status == "open": # Checks if it is available or in maintenance
             current_project.status = new_status
-            current_project.assigned_designer = None
-            current_project.project_details = None
-            #current_project.man_hours = None
-            current_project.project_start_date = None
-            current_project.estimated_time = None
-            current_project.remove_assign(designer_assigned)
-            designer_assigned.managed_project = None
         else:
             current_project.status = new_status
             current_project.project_details = new_project_details
-            #current_project.check_system = new_check
-            #current_project.man_hours = new_man_hours
             current_project.project_start_date = new_project_start_date
             current_project.estimated_time = new_estimated_time
-            current_project.assign(designer_assigned)
             current_project.last_updated = last_update
-            #current_project.last_maintenance = f"{new_check} on {last_update}"
+            
 
         # Write changes in the database
         db.session.commit()
         flash("Project Has Been Successfully Assigned", category='success')
         return redirect(url_for('admin.projects_page'))
     else:
-        flash("Insert a valid date and time for the maintenance", category='danger')
+        flash("Insert a valid date and time for the project", category='danger')
         return redirect(url_for('admin.projects_page'))
 
 @admin.route('/projects/delete_project', methods=['GET', 'POST'])
@@ -291,27 +277,36 @@ def delete_project():
 """
 Assignment to Projects and Permissions
 """
-# @admin.route('/projects/assign_project', methods=['GET', 'POST'])
-# @login_required
-# def assign_project(id):
-#     """
-#     Assign a designer and role to an project
-#     """
-#     check_admin()
+@admin.route('/projects/assign_project/<int:id>', methods=['GET', 'POST'])
+@login_required
+def assign_project(id):
+    """
+    Assign a designer and role to an project
+    """
+    check_admin()
 
-#     project = Project.query.get_or_404(id)
+    project = Project.query.get_or_404(id)
+    project_permission= Permissions.query.with_entities(Permissions.user_id).filter(Permissions.project_id == project.id).all()
+    project_permission = [p.user_id for p in project_permission]
+    
+    query = User.query.filter(User.id.notin_(project_permission), User.is_admin.like(0), User.id != current_user.id).all()
+    
+    if not query:
+        flash('All designers are currently assigned to this project', category='danger')
+        return redirect(url_for('admin.projects_page'))
+    
+    form = ProjectAssignForm(obj=project)
+    form.designer.query = query
+    
+    permission = Permissions()
+    if form.validate_on_submit():
+        permission.assign(project=project, designer=form.designer.data, role=form.role.data)
+       
+        flash('You have successfully assigned the project to the user.', category='success')
 
-#     form = Project(obj=project)
-#     if form.validate_on_submit():
-#         project. = form.department.data
-#         employee.role = form.role.data
-#         db.session.add(employee)
-#         db.session.commit()
-#         flash('You have successfully assigned a department and role.')
+        # redirect to the roles page
+        return redirect(url_for('admin.projects_page'))
 
-#         # redirect to the roles page
-#         return redirect(url_for('admin.list_employees'))
-
-#     return render_template('admin/employees/employee.html',
-#                            employee=employee, form=form,
-#                            title='Assign Employee')
+    return render_template('admin/projects/project_assign.html',
+                           project=project, form=form,
+                           title='Assign Project')

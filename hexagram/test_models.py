@@ -16,5 +16,3 @@ class TestUser(TestCase):
         print("Hashed Password: " + User.password_hash)
 
         self.assertNotEqual(password, User.password_hash)
-
-

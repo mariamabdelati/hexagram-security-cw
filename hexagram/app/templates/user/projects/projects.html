@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}
+PROJECTS@HEXAGRAM Projects
+{% endblock %}
+{% block content %}
+
+<div class="row" style="margin-top:20px; margin-left:20px">
+   <div class="col-8">
+      <h1 style="text-align:center;">Projects</h1>
+   
+      <h3 style="text-align:left;">Managed Projects</h3>
+      {% if managed_projects %}
+         <p style="text-align:left;">All projects you manage are shown below</p>
+         <div class="center">
+            <table class="table table-striped table-dark">
+               <thead>
+                  <tr>
+                     <!-- Projects Columns -->
+                     <th scope="col">Project Name</th>
+                     <th scope="col">Estimated Work Hours</th>
+                     <th scope="col">Status</th>
+                     <th scope="col">Last Updated</th>
+                     <th scope="col">Options</th>
+                  </tr>
+               </thead>
+
+               <tbody>
+                  <!-- Project Rows -->
+                  {% for project in managed_projects %}
+                  {% include 'user/projects/projects_modals.html' %}
+                  <tr>
+                     <td>{{ project.name }}</td>
+                     <td>{{ project.hours }}</td>
+                     <td>{{ project.status }}</td>
+                     <td>{% if project.status == "Open" %}
+                        {{ project.last_updated }}
+                        {% else %}
+                        -
+                     {% endif %}
+                     </td>
+                     <td>
+                        {% if project.status != "open" %}
+                              <button class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo-{{ project.id }}">More info about Project</button>
+                              <button href="/projects/update_project" class="btn btn-outline btn-success" data-toggle="modal" data-target="#modal_project-{{ project.id }}">Complete Project</button>
+                        {% endif %}
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+         <br>
+         <hr class="intro-divider">
+         {% else %}
+            <div style="text-align:left">
+               <h3> You do no manage any projects available. </h3>
+            </div>
+         {% endif %}
+         
+         <h3 style="text-align:left;">Assigned Projects</h3>
+         {% if view_projects %}
+         <p style="text-align:left;">All projects assigned to you are shown below</p>
+         <div class="center">
+            <table class="table table-striped table-dark">
+               <thead>
+                  <tr>
+                     <!-- Projects Columns -->
+                     <th scope="col">Project Name</th>
+                     <th scope="col">Estimated Work Hours</th>
+                     <th scope="col">Status</th>
+                     <th scope="col">Last Updated</th>
+                     <th scope="col">Options</th>
+                  </tr>
+               </thead>
+
+               <tbody>
+                  <!-- Project Rows -->
+                  {% for project in view_projects %}
+                  {% include 'user/projects/projects_modals.html' %}
+                  <tr>
+                     <td>{{ project.name }}</td>
+                     <td>{{ project.hours }}</td>
+                     <td>{{ project.status }}</td>
+                     <td>{% if project.status == "open" %}
+                        {{ project.last_updated }}
+                        {% else %}
+                        -
+                     {% endif %}
+                     </td>
+                     <td>
+                        {% if project.status != "open" %}
+                              <button class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo-{{ project.id }}">More info about Project</button>
+                        {% endif %}
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+         {% else %}
+            <div style="text-align: left">
+               <h3> No projects are assigned to you available. </h3>
+            </div>
+         {% endif %}
+   </div>
+    </div>
+{% endblock %}

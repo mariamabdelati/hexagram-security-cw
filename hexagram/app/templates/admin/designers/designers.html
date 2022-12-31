@@ -21,7 +21,7 @@ PROJECTS@HEXAGRAM Designers
                      <th scope="col">Last Name</th>
                      <th scope="col">Department</th>
                      <th scope="col">Admin</th>
-                     <th scope="col">Options</th>
+                     <th scope="col">Delete</th>
                   </tr>
                </thead>
 
@@ -41,7 +41,7 @@ PROJECTS@HEXAGRAM Designers
                         {% endif %}
                      </td>
                      <td>
-                     <button href="/designers/delete_designer" class="btn btn-outline btn-danger" data-toggle="modal" data-target="#modal_delete_designer-{{ designer.name }}">Delete Designer</button>
+                     <button href="/designers/delete_designer" class="btn btn-outline btn-danger" data-toggle="modal" data-target="#modal_delete_designer-{{ designer.id }}">Delete Designer</button>
                      </td>
                   </tr>
                   {% endfor %}
@@ -54,9 +54,6 @@ PROJECTS@HEXAGRAM Designers
                <hr class="intro-divider">
             </div>
          {% endif %}
-         <div style="text-align: center">
-            <button href="/designers/add_designer" class="btn btn-outline btn-info" data-toggle="modal" data-target="#modal_add_designer">Add Designer</button>
-          </div>
    </div>
 </div>
 {% endblock %}

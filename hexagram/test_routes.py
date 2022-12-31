@@ -1,7 +1,7 @@
 from app import create_app
 import unittest
 
-apps = create_app()
+app = create_app()
 
 class FlaskTestRoutes(unittest.TestCase):
     """
@@ -11,7 +11,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Checks if home page route exists
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.get('/home', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -19,7 +19,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Checks if about page route exists
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.get('/about', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -27,7 +27,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests route for registering a new user
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/register', data=dict(username="test",
                                                         email="test@test.com",
                                                         department="security",
@@ -38,7 +38,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests route for login admin
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.get('/login', data=dict(username="dinoqueen",
                                                     password="12345678"), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
@@ -47,7 +47,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests updating dummy admin data
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             self.test_login()
             response = test.post('/admin/update_account', data=dict(username="testUpdated",
                                                               email="test@updated.com"), follow_redirects=True)
@@ -57,7 +57,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests logout dummy user
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             self.test_login()
             response = test.get('/logout', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
@@ -66,7 +66,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests deleting admin
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             self.test_login()
             response = test.post('/admin/delete', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
@@ -75,7 +75,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to see projects
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/projects', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -83,7 +83,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to create projects
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/add_project', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -91,7 +91,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to update projects
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/update_project', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -99,7 +99,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to delete projects
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/delete_project', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -107,7 +107,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to see designers
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/designers', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -115,7 +115,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Test route to see roles
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.post('/admin/roles', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -123,7 +123,7 @@ class FlaskTestRoutes(unittest.TestCase):
         """
         Tests a error routes
         """
-        with apps.test_client() as test:
+        with app.test_client() as test:
             response = test.get('/other_route', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 

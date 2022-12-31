@@ -55,8 +55,11 @@ def login_page():
         ):
             session["name"] = username
             login_user(attempted_user) # If username and password match login happens
-            flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
-            return redirect(url_for('admin.projects_page'))
+            if attempted_user.is_admin:
+                flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
+                return redirect(url_for('admin.projects_page'))
+            else:
+                return redirect(url_for('user.projects_page'))    
         else:
             flash('The username or password is incorrect. Please make sure you have entered the correct information', category='danger')
 
@@ -73,4 +76,4 @@ def logout_page():
     session["name"] = None
     logout_user()
     flash("Logged out successfully!", category='info')
-    return redirect(url_for("home_page"))
+    return redirect(url_for("home.home_page"))

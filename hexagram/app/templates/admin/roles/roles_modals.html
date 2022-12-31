@@ -14,6 +14,7 @@
 
       <div class="modal-body">
         <form action="{{url_for('admin.add_role')}}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
           <div class="form-group">
             <label>Name:</label>
             <input
@@ -53,7 +54,7 @@
 
 <!-- Delete Role -->
 <div
-  id="modal_delete_role-{{ role.name }}"
+  id="modal_delete_role-{{ role.id }}"
   class="modal fade"
   role="dialog"
 >
@@ -65,11 +66,12 @@
 
       <div class="modal-body">
         <form action="{{url_for('admin.delete_role')}}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
           <input
             type="hidden"
             class="form-control"
             name="name"
-            value="{{ role.id }}"
+            value="{{ role.name }}"
           />
 
           <div class="form-group">

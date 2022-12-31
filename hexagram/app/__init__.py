@@ -6,10 +6,15 @@ from flask_session import Session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from datetime import timedelta
+from flask_bootstrap import Bootstrap
+from flask_wtf.csrf import CSRFProtect
+
+
 
 #initialize SQLAlchemy
 db = SQLAlchemy()
 login_manager = LoginManager()
+csrf = CSRFProtect()
 bcrypt = Bcrypt()
 limiter = Limiter(key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"])
@@ -19,11 +24,13 @@ def create_app():
     # app.config["SESSION_PERMANENT"] = False
     # app.config["SESSION_TYPE"] = "filesystem"
     # Session(app)
-    app.config['SECRET_KEY'] = 'ec9439cfc6c796ae2029594d'
+    app.config['SECRET_KEY'] = 'mysupersecretkey'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-    
+    global bootstrap
+    bootstrap = Bootstrap(app)
     limiter.init_app(app)
 
+    csrf.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
         
@@ -42,13 +49,17 @@ def create_app():
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    #blueprint for user routes in app
+    from .user import user as user_blueprint
+    app.register_blueprint(user_blueprint)
+
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
     @app.before_request
     def make_session_permanent():
         session.permanent = True
-        app.permanent_session_lifetime = timedelta(minutes=1)
+        app.permanent_session_lifetime = timedelta(minutes=10)
 
     @app.errorhandler(404)
     # Inbuilt function which takes error as parameter

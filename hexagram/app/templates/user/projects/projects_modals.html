@@ -62,12 +62,25 @@
 
          <div class="modal-body">
             <form action="{{url_for('admin.update_project')}}" method="POST">
+               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
 
                <div class="form-group">
                    <label>Status:</label>
-                  <input type="text" class="form-control" name="status" value="in progress" readonly>
+                  <input type="text" class="form-control" name="status" value="In Progress" readonly>
                </div>
+               <!--
+                <div class="form-group">
+                  <label>Check System Inspection: </label>
+                    <select class="form-control" name="check">
+                        <option value="A check">A check</option>
+                        <option value="B check">B check</option>
+                        <option value="C check">C check</option>
+                        <option value="3C check">3C check</option>
+                        <option value="D check">D check</option>
+                    </select>
+               </div>
+               -->
                <div class="form-group">
                   <label>Project Details:</label>
                   <input type="text" class="form-control" name="project_details" value="Insert the details about this project" maxlength="200">
@@ -82,6 +95,21 @@
                   <label>Estimated Time (in Hours):</label>
                   <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}" class="form-control" name="estimated_time" value="0">
                </div>
+
+                <div class="form-group">
+                  <label>Assigned Designer: </label>
+                    <select class="form-control"  name="assigned_designer">
+                    {% for designer in designers %}
+                      <option value="{{ designer.id }}">{{ designer.name }}</option>
+                    {% endfor %}
+                    </select>
+               </div>
+               <!--
+                <div class="form-group">
+                  <label>Man-Hours needed:</label>
+                  <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}" class="form-control" name="man_hours" value="0">
+               </div>
+               -->
                <div class="form-group">
                   <button class="btn btn-primary" type="submit">Confirm</button>
                </div>
@@ -109,6 +137,7 @@
          <div class="modal-body">
             <p>Is the project finished?</p>
             <form action="{{url_for('admin.update_project')}}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
 
                <div class="form-group">

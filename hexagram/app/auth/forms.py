@@ -26,11 +26,11 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Email Address already exists! Please try a different email address')
 
     # Variables needed for registration
-    username = StringField(label='Username:', validators=[Length(min=3, max=30), DataRequired()])
-    email = StringField(label='Email Address:', validators=[Email(), DataRequired()])
-    department = StringField(label='Department:', validators=[DataRequired()])
-    password1 = PasswordField(label='Password:', validators=[Length(min=8), DataRequired(), Regexp(regex="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$", message="Minimum eight characters, at least one uppercase letter, one lowercase letter and one symbol, and one number")])
-    password2 = PasswordField(label='Confirm Password:', validators=[EqualTo('password1'), DataRequired()])
+    username = StringField(label='Username:', validators=[Length(min=3, max=30), DataRequired('Please enter your username')])
+    email = StringField(label='Email Address:', validators=[Email(), DataRequired('Email is required')])
+    department = StringField(label='Department:', validators=[DataRequired('Department is required')])
+    password1 = PasswordField(label='Password:', validators=[Length(min=8, max=16), DataRequired('Password is required'), Regexp(regex="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$", message="Minimum eight characters, at least one uppercase letter, one lowercase letter and one symbol, and one number")])
+    password2 = PasswordField(label='Confirm Password:', validators=[EqualTo('password1'), DataRequired('Please confirm password')])
     submit = SubmitField(label='Create Account')
 
 class LoginForm(FlaskForm):
@@ -38,6 +38,6 @@ class LoginForm(FlaskForm):
     Login Form object
     """
     # Data needed to login
-    username = StringField(label='User Name:', validators=[DataRequired()])
-    password = PasswordField(label='Password:', validators=[DataRequired()])
+    username = StringField(label='User Name:', validators=[DataRequired('Please enter your username')])
+    password = PasswordField(label='Password:', validators=[DataRequired('Please enter your password')])
     submit = SubmitField(label='Sign in')
