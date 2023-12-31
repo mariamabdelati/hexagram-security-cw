@@ -4,7 +4,52 @@ PROJECTS@HEXAGRAM Login Page
 {% endblock %}
 
 {% block content %}
+
 <body class="text-center">
+    <section class="vh-100" style="background-color: #212121;">
+        <div class="container h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+              <div class="card text-black bg-dark" style="border-radius: 25px;">
+                <div class="card-body p-md-5">
+                    <h3 class="mb-4 pb-2 pb-md-0 mb-md-5" style="color: white;">Login Form</h3>
+                    <form method="POST" class="form-signin">
+                        {{ form.csrf_token }}
+                        {{ form.hidden_tag() }}
+        
+
+                        <div class="form-floating mb-4">
+                            {{ form.username(class="form-control form-control-lg", placeholder="Username", id="user-name") }}
+                            <label class="form-label text-muted" for="user-name">{{ form.username.label() }}</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            {{ form.password(class="form-control form-control-lg", placeholder="Password", id="password") }}
+                            <label class="form-label text-muted" for="password">{{ form.password.label() }}</label>
+                        </div>
+        
+    
+                
+                      <div class="mt-4 pt-2">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                      </div>
+    
+                      <br>
+                      <div class="text-center text-lg">
+                        <p class="mb-5 pb-lg-2" style="color:white;">Don't have an account? <a href="{{ url_for('auth.registration_page') }}"
+                            class="link-danger">Register Now</a></p>
+                      </div>
+        
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+</body>
+
+<!-- <body class="text-center">
     <div class="container">
         <form method="POST" class="form-signin" style="color:white">
             {{ form.csrf_token }}
@@ -14,8 +59,11 @@ PROJECTS@HEXAGRAM Login Page
             </h1>
 
             <br>
-            {{ form.username.label() }}
-            {{ form.username(class="form-control", placeholder="Username") }}
+            <div class="form-floating">
+                {{ form.username(class="form-control", placeholder="Username", id="floatingInput") }}
+                <label  style="color:black" for="floatingInput">{{ form.username.label() }}</label>
+            </div>
+            
 
             {{ form.password.label() }}
             {{ form.password(class="form-control", placeholder="Password") }}
@@ -30,5 +78,5 @@ PROJECTS@HEXAGRAM Login Page
 
         </form>
     </div>
-</body>
+</body> -->
 {% endblock %}

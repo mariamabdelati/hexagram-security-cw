@@ -11,6 +11,7 @@ from flask_wtf.csrf import CSRFProtect
 
 
 
+
 #initialize SQLAlchemy
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -92,5 +93,14 @@ def create_app():
         Handles 403 error
         """
         return render_template("errors/403.html"), 403
+
+    
+    @app.errorhandler(429)
+    # Inbuilt function which takes error as parameter
+    def forbidden(e):
+        """
+        Handles 403 error
+        """
+        return render_template("errors/429.html", error=e.description), 429    
 
     return app

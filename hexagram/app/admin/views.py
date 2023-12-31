@@ -51,7 +51,7 @@ def update():
         return redirect(url_for('home.home_page'))
 
 
-@admin.route('/delete', methods=['GET', 'POST'])
+@admin.route('/delete_account', methods=['GET', 'POST'])
 @login_required # Requires admin login
 def delete():
     """
@@ -89,8 +89,8 @@ def delete_designer():
     check_admin()
 
     designer_name = request.form.get('name')
-    current_designer = User.query.filter_by(id=designer_name).first()
-    print(current_designer.id)
+    current_designer = User.query.filter_by(username=designer_name).first()
+    #print(current_designer.id)
 
     permissions= Permissions.query.with_entities(Permissions.user_id).filter_by(user_id=current_designer.id).all()
     permissions = [p.user_id for p in permissions]
@@ -252,7 +252,7 @@ def update_project():
 
         # Write changes in the database
         db.session.commit()
-        flash("Project Has Been Successfully Assigned", category='success')
+        flash("Project Has Been Successfully Updated", category='success')
         return redirect(url_for('admin.projects_page'))
     else:
         flash("Insert a valid date and time for the project", category='danger')
@@ -272,6 +272,7 @@ def delete_project():
 
     # Write changes in the database
     db.session.commit()
+    flash("Project Has Been Successfully Deleted", category='success')
     return redirect(url_for('admin.projects_page'))
 
 """

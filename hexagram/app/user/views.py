@@ -24,7 +24,7 @@ def projects_page():
                         .filter(Permissions.user_id == current_user.id, Permissions.role_id != 1).all()
     designer_permission = [p.project_id for p in designer_permission]
     #print(designer_permission)
-    manager_permission= Permissions.query.with_entities(Permissions.project_id).filter_by(user_id=current_user.id, role_id=2).all()
+    manager_permission= Permissions.query.with_entities(Permissions.project_id).filter_by(user_id=current_user.id, role_id=1).all()
     manager_permission = [p.project_id for p in manager_permission]
     
     view_projects = Project.query.filter(Project.id.in_(designer_permission))
@@ -86,32 +86,44 @@ def update_project():
         flash("Insert a valid date and time for the maintenance", category='danger')
         return redirect(url_for('admin.projects_page'))
 
-
-
 """
 Assignment to Projects and Permissions
 """
-# @admin.route('/projects/assign_project', methods=['GET', 'POST'])
-# @login_required
-# def assign_project(id):
-#     """
-#     Assign a designer and role to an project
-#     """
-#     check_admin()
+@user.route('/projects/assign_project/<int:id>', methods=['GET', 'POST'])
+@login_required
+def assign_project(id):
+    """
+    Assign a designer and role to an project
+    """
 
-#     project = Project.query.get_or_404(id)
+    project = Project.query.get_or_404(id)
+    manager_permission= Permissions.query.filter_by(project_id=project.id, role_id=1, user_id=current_user.id).first()
+    if not manager_permission:
+        flash('You do not have sufficient permissions to assign project to user!', category='danger')
+        return redirect(url_for('user.projects_page'))
 
-#     form = Project(obj=project)
-#     if form.validate_on_submit():
-#         project. = form.department.data
-#         employee.role = form.role.data
-#         db.session.add(employee)
-#         db.session.commit()
-#         flash('You have successfully assigned a department and role.')
+    project_permission= Permissions.query.with_entities(Permissions.user_id).filter(Permissions.project_id == project.id).all()
+    project_permission = [p.user_id for p in project_permission]
 
-#         # redirect to the roles page
-#         return redirect(url_for('admin.list_employees'))
+    
+    query = User.query.filter(User.id.notin_(project_permission), User.is_admin.like(0), User.id != current_user.id).all()
+    
+    if not query:
+        flash('All designers are currently assigned to this project', category='danger')
+        return redirect(url_for('user.projects_page'))
+    
+    form = ProjectAssignForm(obj=project)
+    form.designer.query = query
+    
+    permission = Permissions()
+    if form.validate_on_submit():
+        permission.assign(project=project, designer=form.designer.data, role=form.role.data)
+       
+        flash('You have successfully assigned the project to the user.', category='success')
 
-#     return render_template('admin/employees/employee.html',
-#                            employee=employee, form=form,
-#                            title='Assign Employee')
+        # redirect to the projects page
+        return redirect(url_for('user.projects_page'))
+
+    return render_template('user/projects/project_assign.html',
+                           project=project, form=form,
+                           title='Assign Project')

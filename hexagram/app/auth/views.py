@@ -15,22 +15,19 @@ def registration_page():
     register_form = RegistrationForm() # Loads Registration Form
     # Assigns data input on the form to Admin
     if register_form.validate_on_submit():
-        admin_code_data = 'admin'
         user_to_create = User(username=register_form.username.data,
+                               first_name=register_form.first_name.data,    
+                               last_name=register_form.last_name.data,
                                department=register_form.department.data,
                                email=register_form.email.data,
                                password=register_form.password1.data)
-        if admin_code_data == 'admin':
-            db.session.add(user_to_create)
-            db.session.commit()
-            login_user(user_to_create)
-
-            #TODO: CHANGE COMMENTS AND THING
+        
+        db.session.add(user_to_create)
+        db.session.commit()
+        login_user(user_to_create)
             
-            flash(f"Your account has been created successfully! You are now logged in as {user_to_create.username}", category='success')
-            return redirect(url_for('admin.projects_page'))
-        else:
-            flash(f"If you are not an admin you can't register!", category='danger')
+        flash(f"Your account has been created successfully! You are now logged in as {user_to_create.username}", category='success')
+        return redirect(url_for('user.projects_page'))
 
     # Shows user if there are any error with registration
     if register_form.errors != {}: #If there are not errors from the validations
@@ -40,7 +37,7 @@ def registration_page():
     return render_template('authentication/registration.html', form=register_form)
 
 @auth.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("5 per minute", error_message="You have exceeded the maximum number of login attempts. Please try again in 1 minute.")
 def login_page():
     """
     Loads login page and makes sure username and password match

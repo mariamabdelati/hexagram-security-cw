@@ -5,6 +5,107 @@ PROJECTS@HEXAGRAM Register Page
 
 {% block content %}
 <body class="text-center">
+<section class="vh-100" style="background-color: #212121;">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-12 col-xl-11">
+          <div class="card text-black bg-dark" style="border-radius: 25px;">
+            <div class="card-body p-md-5">
+                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5" style="color: white;">Registration Form</h3>
+                <form method="POST" class="form-register">
+                    {{ form.csrf_token }}
+                    {{ form.hidden_tag() }}
+    
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.first_name(class="form-control form-control-lg", id="firstName", placeholder="First Name") }}
+                        <label class="form-label text-muted" for="firstName">{{ form.first_name.label() }}</label>
+                      </div>
+    
+                    </div>
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.last_name(class="form-control form-control-lg", id="lastName", placeholder="Last Name") }}
+                        <label class="form-label text-muted" for="lastName">{{ form.last_name.label() }}</label>
+                      </div>
+    
+                    </div>
+                  </div>
+    
+                
+    
+                      <div class="form-floating mb-4">
+                        {{ form.email(class="form-control form-control-lg", id="emailAddress", placeholder="Email Address") }}
+                        <label class="form-label text-muted" for="emailAddress">{{ form.email.label() }}</label>
+                      </div>
+    
+
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.username(class="form-control form-control-lg", id="username", placeholder="Username") }}
+                        <label class="form-label text-muted" for="username">{{ form.username.label() }}</label>
+                      </div>
+                      
+            
+    
+                    </div>
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.department(class="form-control form-control-lg", id="department", placeholder="Department") }}
+                        <label class="form-label text-muted" for="department">{{ form.department.label() }}</label>
+                      </div>
+    
+                    </div>
+                  </div>
+                  
+                 
+
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.password1(class="form-control form-control-lg", placeholder="Password", id="pwd1") }}
+                        <label class="form-label text-muted" for="pwd1">{{ form.password1.label() }}</label>
+                      </div>
+                      
+            
+    
+                    </div>
+                    <div class="col-md-6 mb-4">
+    
+                      <div class="form-floating">
+                        {{ form.password2(class="form-control form-control-lg", id="pwd2", placeholder="Confirm Password") }}
+                        <label class="form-label text-muted" for="pwd2">{{ form.password2.label() }}</label>
+                      </div>
+    
+                    </div>
+                  </div>
+            
+                  <div class="mt-4 pt-2">
+                    {{ form.submit(class="btn btn-primary btn-lg") }}
+                  </div>
+
+                  <br>
+                  <div class="text-center text-lg">
+                    <p class="mb-5 pb-lg-2" style="color:white;">Already have an account? <a href="{{ url_for('auth.login_page') }}"
+                        class="link-danger">Login</a></p>
+                  </div>
+    
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+<!-- <body class="text-center">
     <div class="container">
         <form method="POST" class="form-register" style="color:white">
             {{ form.csrf_token }}
@@ -37,5 +138,5 @@ PROJECTS@HEXAGRAM Register Page
 
         </form>
     </div>
-</body>
+</body> -->
 {% endblock %}

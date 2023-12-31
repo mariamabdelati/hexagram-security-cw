@@ -14,7 +14,7 @@ class RoleForm(FlaskForm):
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-class ProjectAssignForm(FlaskForm, object):
+class ProjectAssignForm(FlaskForm):
     """
     Form for admin to assign designer and roles to project
     """

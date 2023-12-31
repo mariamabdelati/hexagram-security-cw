@@ -1,218 +1,173 @@
 <style>
   .modal-content {
-    background-color: #212121
+    background-color: #212121;
+    color: #fff;
+    text-align: left;
   }
 </style>
 
 <!-- More Info about project -->
-<div class="modal fade" id="Modal-MoreInfo-{{ project.id }}"
-     tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" role="dialog" id="Modal-MoreInfo-{{ project.id }}" tabindex="-1" >
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel"> {{ project.name }} Project Info</h5>
+         <button type="button" class="btn-outline-light btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+       
+       <div class="modal-body">
+           <div class="mb-3">
+             Project Description: {{ project.project_details }}
+           </div>
+           <div class="mb-3">
+            Project Start Date: {{ project.project_start_date }}
+           </div>
+           <div class="mb-3">
+            Estimated Time: {{ project.estimated_time }} Hours
+           </div>
+           <div class="mb-3">
+            Project Designer: {{ project.assigned_designer }}
+           </div>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       </div>
+     </div>
+   </div>
+ </div>
 
-  <div class="modal-dialog">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="ModalLabel">
-          {{ project.name }}
-        </h5>
-
-        <button type="button" class="close"
-                data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-
-      </div>
-      
-      <div class="modal-body">
-        Project Description:
-        {{ project.project_details }}
-      </div>
-        <div class="modal-body">
-        Project Start Date:
-        {{ project.project_start_date }}
-      </div>
-      <div class="modal-body">
-        Estimated Time:
-        {{ project.estimated_time }} Hours
-      </div>
-        <div class="modal-body">
-        Project Designer:
-        {{ project.assigned_designer }}
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">Close
-        </button>
-
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Edit Project -->
-<div id="modal_edit_project-{{ project.id }}" class="modal fade" role="dialog">
- <div class="modal-dialog">
-
-      <div class="modal-content">
-
-         <div class="modal-header">
-            <h4 class="modal-title">Assign {{ project.name }} Project</h4>
-         </div>
-
-         <div class="modal-body">
-            <form action="{{url_for('admin.update_project')}}" method="POST">
-                <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
-
-               <div class="form-group">
-                   <label>Status:</label>
-                  <input type="text" class="form-control" name="status" value="in progress" readonly>
-               </div>
-               <div class="form-group">
-                  <label>Project Details:</label>
-                  <input type="text" class="form-control" name="project_details" value="Insert the details about this project" maxlength="200">
-               </div>
-
-                <div class="form-group">
-                  <label>Project Start Date:</label>
-                  <input type="date" class="form-control" name="project_start_date" value="{{project.project_start_date}}">
-               </div>
-
-              <div class="form-group">
-                  <label>Estimated Time (in Hours):</label>
-                  <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}" class="form-control" name="estimated_time" value="0">
-               </div>
-               <div class="form-group">
-                  <button class="btn btn-primary" type="submit">Confirm</button>
-               </div>
-
-            </form>
-         </div>
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
+<div class="modal fade" role="dialog" id="modal_edit_project-{{ project.id }}" tabindex="-1" >
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Edit {{ project.name }} Project</h5>
+         <button type="button" class="btn-outline-light btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+       
+       <div class="modal-body">
+         <form action="{{url_for('admin.update_project')}}" method="POST">
+           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+           <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
+           <div class="form-group mb-3">
+             <label for="project-status" class="col-form-label">Status:</label>
+             <input type="text" class="form-control" name="status" id="project-status" value="in progress" readonly/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="project-details" class="col-form-label">Project Details:</label>
+            <input type="text" class="form-control" name="project_details" id="project-details" placeholder="Insert project details" maxlength="200"/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="start-date" class="col-form-label">Project Start Date:</label>
+            <input type="date" class="form-control" name="project_start_date" id="start-date" value="{{project.project_start_date}}"/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="estimated-time" class="col-form-label">Estimated Time (in Hours):</label>
+            <input type="number" onkeyup="if(this.value<0){this.value= this.value * -1}" class="form-control" name="estimated_time" id="estimated-time" value="0"/>
+           </div>
+       </div>
+       <div class="form-group modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+         <button type="submit" class="btn btn-primary">Confirm</button>
+       </div>
+      </form>
+     </div>
    </div>
-</div>
+ </div>
+
 
 <!-- Finish Project -->
-<div id="modal_project-{{ project.id }}" class="modal fade" role="dialog">
- <div class="modal-dialog">
-
-      <div class="modal-content">
-
-         <div class="modal-header">
-            <h4 class="modal-title">Finish {{ project.title }} Project</h4>
-         </div>
-
-         <div class="modal-body">
-            <p>Is the project finished?</p>
-            <form action="{{url_for('admin.update_project')}}" method="POST">
-                <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
-
-               <div class="form-group">
-                  <input type="hidden" class="form-control" name="status" value="open">
-               </div>
-
-               <div class="form-group">
-                  <input type="hidden" class="form-control" name="project_details" value="No more work is needed for now">
-               </div>
-
-              <div class="form-group">
-                  <input type="hidden" class="form-control" name="project_start_date" value="None">
-              </div>
-
-                <div class="form-group">
-                    {% for project in projects %}
-                        {% for designer in designers %}
-                            {% if project.id == designer.managed_project %}
-                                <input type="hidden" class="form-control" name="assigned_designer" value="{{designer.id}}">
-                            {% endif %}
-                        {% endfor %}
-                    {% endfor %}
-               </div>
-
-               <div class="form-group">
-                  <button class="btn btn-primary" type="submit">Confirm</button>
-               </div>
-            </form>
-         </div>
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-
-      </div>
+<div class="modal fade" role="dialog" id="modal_project-{{ project.id }}" tabindex="-1" >
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Finish {{ project.name }} Project</h5>
+         <button type="button" class="btn-outline-light btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+       
+       <div class="modal-body">
+         <p>Is the project finished?</p>
+         <form action="{{url_for('admin.update_project')}}" method="POST">
+           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+           <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
+           <div class="form-group mb-3">
+             <label for="project-status" class="col-form-label">Status:</label>
+             <input type="text" class="form-control" name="status" id="project-status" value="open" readonly/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="project-details" class="col-form-label">Project Details:</label>
+            <input type="text" class="form-control" name="project_details" id="project-details" value="No more work is needed for now" readonly/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="start-date" class="col-form-label">Project Start Date:</label>
+            <input type="text" class="form-control" name="project_start_date" id="start-date" value="None" readonly/>
+           </div>
+       </div>
+       <div class="form-group modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+         <button type="submit" class="btn btn-primary">Confirm</button>
+       </div>
+      </form>
+     </div>
    </div>
-</div>
+ </div>
 
 <!-- Add new Project -->
-<div id="modal_add_project" class="modal fade" role="dialog">
- <div class="modal-dialog">
-
-      <div class="modal-content">
-
-         <div class="modal-header">
-            <h4 class="modal-title">Create new project</h4>
-         </div>
-
-         <div class="modal-body">
-            <form action="{{url_for('admin.add_project')}}" method="POST">
-               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-               <div class="form-group">
-                 <label>Project:</label>
-                   <input type="text" class="form-control" name="name" maxlength="15" value="Project Name">
-               </div>
-
-               <div class="form-group">
-                  <label>Work hours:</label>
-                  <input type="number" class="form-control" name="hours" maxlength="5" value="0">
-               </div>
-
-               <div class="form-group">
-                  <button class="btn btn-primary" type="submit">Create</button>
-               </div>
-            </form>
-         </div>
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
+<div class="modal fade" role="dialog" id="modal_add_project" tabindex="-1" >
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Create New Project</h5>
+         c
+       </div>
+       
+       <div class="modal-body">
+         <form action="{{url_for('admin.add_project')}}" method="POST">
+           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+           <div class="form-group mb-3">
+             <label for="project-name" class="col-form-label">Project Name:</label>
+             <input type="text" class="form-control" name="name" id="project-name" maxlength="15" placeholder="Project Name"/>
+           </div>
+           <div class="form-group mb-3">
+            <label for="work-hours" class="col-form-label">Work Hours:</label>
+            <input type="number" class="form-control" name="hours" id="project-details" maxlength="5" value="0"/>
+           </div>
+       </div>
+       <div class="form-group modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+         <button type="submit" class="btn btn-primary">Create</button>
+       </div>
+      </form>
+     </div>
    </div>
-</div>
+ </div>
 
 <!-- Delete Project -->
-<div id="modal_delete_project-{{ project.id }}" class="modal fade" role="dialog">
+<div class="modal fade" role="dialog" id="modal_delete_project-{{ project.id }}" tabindex="-1">
    <div class="modal-dialog">
-
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title">Delete Project</h4>
-         </div>
-
-         <div class="modal-body">
-
-            <form action="{{url_for('admin.delete_project')}}" method="POST">
-               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-               <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
-
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Delete Project</h5>
+         <button type="button" class="btn-outline-light btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <div class="modal-body">
+         <form action="{{url_for('admin.delete_project')}}" method="POST">
+           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+           <input type="hidden" class="form-control" name="name" value="{{ project.name }}">
+           <div class="mb-3">
                <div class="form-group">
                   <label>Are you sure you want to delete {{ project.name }}?</label>
                </div>
-
-               <div class="form-group">
-                  <button class="btn btn-danger btn-xs" type="submit">Delete</button>
-               </div>
-
-            </form>
-         </div>
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
-      </div>
+           </div>
+         
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+         <button type="submit" class="btn btn-danger" type="submit">Delete</button>
+       </div>
+      </form>
+     </div>
    </div>
-</div>
+ </div>
 

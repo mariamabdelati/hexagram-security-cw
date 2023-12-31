@@ -10,9 +10,13 @@ PROJECTS@HEXAGRAM
 
             <p class="lead font-weight-normal">You may return to the main pages using the navigations below!</p>
             {% if current_user.is_authenticated %}
+                {% if current_user.is_admin %}
                 <a class="btn btn-primary" href="{{ url_for('admin.projects_page') }}">Projects Page</a>
                 <a class="btn btn-primary" href="{{ url_for('admin.designers_page') }}">Designers Page</a>
                 <a class="btn btn-primary" href="{{ url_for('admin.roles_page') }}">Roles Page</a>
+                {% else %}
+                <a class="btn btn-primary" href="{{ url_for('user.projects_page') }}">Projects Page</a>
+                {% endif %}
             {% else %}
                 <a class="btn btn-primary" href="{{ url_for('auth.login_page') }}">Login</a>
             {% endif %}
